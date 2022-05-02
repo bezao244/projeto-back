@@ -2,7 +2,7 @@ const express = require('express');
 const router= express.Router();
 const mysqlConnection = require('../connection/connection');
 const jwt = require('jsonwebtoken');
-
+const User = require('../models/usercs');
 
 router.get('/', (req,res)=>{
     mysqlConnection.query('SELECT * FROM user', (err, rows, fields)=>{
@@ -13,6 +13,21 @@ router.get('/', (req,res)=>{
         }
     });
 });
+
+router.get('/create', (req,res)=>{
+    let user = new User('bezao', 'bezao', 'bezao');
+    //res.send(user);
+     mysqlConnection.query(
+        'INSERT INTO user (username, pass, roleid) VALUES (?, ?, ?)', [user.userName, user.pass, user.roleId],
+        (err, rows, fields)=>{
+            if(!err){
+                res.json('Usuário criado com sucesso!');
+            }else{
+                res.json('Não foi possivel criar o usuário!');
+            }
+        }
+    )
+})
 
 router.post('/singin', (req,res)=>{
     const { userName, pass } = req.body;
