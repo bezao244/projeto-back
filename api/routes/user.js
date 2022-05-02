@@ -15,7 +15,7 @@ router.get('/', (req,res)=>{
 });
 
 router.get('/create', (req,res)=>{
-    let user = new User('bezao', 'bezao', 'bezao');
+    let user = new User( req.userName, req.pass, req.roleId);
     //res.send(user);
      mysqlConnection.query(
         'INSERT INTO user (username, pass, roleid) VALUES (?, ?, ?)', [user.userName, user.pass, user.roleId],
@@ -23,7 +23,7 @@ router.get('/create', (req,res)=>{
             if(!err){
                 res.json('Usuário criado com sucesso!');
             }else{
-                res.json('Não foi possivel criar o usuário!');
+                res.json('Não foi possivel criar o usuário!', err);
             }
         }
     )
