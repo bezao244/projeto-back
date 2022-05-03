@@ -16,12 +16,15 @@ router.get('/', (req,res)=>{
 });
 
 router.get('/create', (req,res)=>{
-    let user = new User( req.body.userName, req.body.pass, req.body.roleId);
-    if(user.userName != '' && user.pass != '' && user.roleId != ''){
-        user.save(user);
-    }else{
-        res.json('Erro ao salvar!, dados do usuário em branco!');
-    }
+    let user = new User( req.userName, req.pass, req.roleId);
+
+    console.log(req.body);
+    // if(user.userName != '' && user.pass != '' && user.roleId != ''){
+    //     user.save(user);
+
+    // }else{
+    //     res.json('Erro ao salvar!, dados do usuário em branco!');
+    // }
     
 });
 
