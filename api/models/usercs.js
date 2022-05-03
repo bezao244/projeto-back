@@ -7,14 +7,27 @@ module.exports = class User{
         this.pass = pass;
         this.roleId= roleId;
     }
-    static save(user){
+    save(user){
         return mysqlConnection.execute(
-            'INSERT INTO users() VALUES(?, ?, ?)', [user.userName, user.pass, user.roleId],
+            'INSERT INTO user VALUES(?, ?, ?)', [user.userName, user.pass, user.roleId],
             (err, rows, fields)=>{
                 if(!err){
-                    res.json('Usuário criado com sucesso!');
+                    console.log('Usuário criado com sucesso!');
                 }else{
+                    console.log('Erro ao criar usuário', err);
+                }
+            }
+        )
+    }
 
+    delete(user){
+        return mysqlConnection.execute(
+            'DELETE FROM user where username = ?', [user.userName],
+            (err, rows, fields)=>{
+                if(!err){
+                    console.log('Usuário deletado com sucesso!');
+                }else{
+                    console.log('Erro ao deletar usuário', err);
                 }
             }
         )
