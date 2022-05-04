@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/usercs');
 
 router.get('/', (req,res)=>{
-    mysqlConnection.query('SELECT * FROM user', (err, rows, fields)=>{
+    return mysqlConnection.query('SELECT * FROM user', (err, rows, fields)=>{
         if(!err){
             let users = rows;
             res.json(users);
@@ -15,10 +15,35 @@ router.get('/', (req,res)=>{
     });
 });
 
+router.get('/filtrarPorNome', (req,res)=>{
+    return mysqlConnection.query('SELECT * FROM user where username = ?', [req.body.userName], (err, rows, fields)=>{
+        if(!err){
+            let users = rows;
+            res.send(users);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
+router.get('/filtrarPorTipo', (req,res)=>{
+    return mysqlConnection.query('SELECT * FROM user where roleid = ?', [req.body.roleId], (err, rows, fields)=>{
+        if(!err){
+            let users = rows;
+            res.send(users);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
 router.get('/create', (req,res)=>{
-    let user = new User( req.body.userName, req.body.pass, req.body.roleId);
+    let user = new User(req.body.userName, req.body.pass, req.body.roleId);
+
+    console.log(user);
     if(user.userName != '' && user.pass != '' && user.roleId != ''){
         user.save(user);
+        res.send('Usuário criado com sucesso!');
     }else{
         res.json('Erro ao salvar!, dados do usuário em branco!');
     }
