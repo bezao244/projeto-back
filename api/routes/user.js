@@ -15,6 +15,21 @@ router.get('/', (req,res)=>{
     });
 });
 
+router.get('/adicionarNotaCandidato', (req,res)=>{
+    if(req.body.nota > 100){
+        res.json('Nota muito alta');
+    }else{
+        mysqlConnection.query('update user set nota = ? where idCandidato = ?',[req.body.nota, req.body.idCandidato], 
+    (err, rows)=>{
+       if(!err){
+           res.json('Nota cadastrada com sucesso!');
+       }else{
+           console.log(err);
+       }
+   });
+    }
+});
+
 router.get('/filtrarPorNome', (req,res)=>{
     return mysqlConnection.query('SELECT * FROM user where username = ?', [req.body.userName], (err, rows, fields)=>{
         if(!err){
@@ -75,10 +90,11 @@ router.post('/singin', (req,res)=>{
                let data = JSON.stringify(rows[0]);
                const token = jwt.sign(data, 'stil');
                res.json('Usuário encontrado!');
+               return true;
             }else{
                 res.json('Incorretos!');
+                return false;
             }
-            console.log(rows);
         }else{
             console.log(err);
         }

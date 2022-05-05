@@ -9,7 +9,7 @@ module.exports = class User{
     }
     save(user){
         return mysqlConnection.execute(
-            'INSERT INTO user VALUES(?, ?, ?)', [user.userName, user.pass, user.roleId],
+            'INSERT INTO user(userName, pass, roleId) VALUES(?, ?, ?)', [user.userName, user.pass, user.roleId],
             (err, rows, fields)=>{
                 if(!err){
                     console.log('Usuário criado com sucesso!');
