@@ -52,7 +52,7 @@ router.get('/filtrarPorTipo', (req,res)=>{
     });
 });
 
-router.get('/create', (req,res)=>{
+router.post('/create', (req,res)=>{
     let user = new User(req.body.userName, req.body.pass, req.body.roleId);
 
     console.log(user);
