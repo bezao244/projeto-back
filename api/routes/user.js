@@ -30,9 +30,11 @@ router.get('/adicionarNotaCandidato', (req,res)=>{
     }
 });
 
-router.get('/filtrarPorNome', (req,res)=>{
+router.post('/filtrarPorNome', (req,res)=>{
+    console.log(req.body.userName);
     return mysqlConnection.query('SELECT * FROM user where username = ?', [req.body.userName], (err, rows, fields)=>{
         if(!err){
+           
             let users = rows;
             res.send(users);
         }else{
@@ -82,18 +84,15 @@ router.get('/deletar', (req,res)=>{
 
 router.post('/singin', (req,res)=>{
     const { userName, pass } = req.body;
-    mysqlConnection.query('SELECT * FROM user where username = ? and pass = ?', [userName, pass], 
+    mysqlConnection.execute('SELECT * FROM user where username = ? and pass = ?', [userName, pass], 
     (err, rows, fields)=>{
         if(!err){
             if(rows.length > 0){
-                //encriptando a senha 
-               let data = JSON.stringify(rows[0]);
-               const token = jwt.sign(data, 'stil');
-               res.json('Usuário encontrado!');
-               return true;
+                res.send(rows);
+               console.log('Usuário encontrado!');
             }else{
-                res.json('Incorretos!');
-                return false;
+                console.log('Incorretos!');
+                res.send(false);
             }
         }else{
             console.log(err);
