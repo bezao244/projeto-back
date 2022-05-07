@@ -4,6 +4,8 @@ const mysqlConnection = require('../connection/connection');
 const jwt = require('jsonwebtoken');
 const User = require('../models/usercs');
 
+var usuario = new User();
+
 router.get('/', (req,res)=>{
     return mysqlConnection.query('SELECT * FROM user', (err, rows, fields)=>{
         if(!err){
@@ -13,6 +15,16 @@ router.get('/', (req,res)=>{
             console.log(err);
         }
     });
+});
+
+router.post('/adicionarOficioCandidato', (req, res)=>{
+    mysqlConnection.query('select idOficio from oficio where descricao = ?', [req.body.descricao],
+     (err,rows)=>{
+        let idOficio = rows[0].idOficio;
+        let idCandidato = req.body.idCandidato;
+        usuario.adicionarOficio(idOficio, idCandidato);
+        res.send('Oficio adicionado com sucesso!')  
+     });
 });
 
 router.get('/adicionarNotaCandidato', (req,res)=>{
@@ -30,7 +42,7 @@ router.get('/adicionarNotaCandidato', (req,res)=>{
     }
 });
 
-router.get('/filtrarPorNome', (req,res)=>{
+router.post('/filtrarPorNome', (req,res)=>{
     return mysqlConnection.query('SELECT * FROM user where username = ?', [req.body.userName], (err, rows, fields)=>{
         if(!err){
             let users = rows;
@@ -65,9 +77,9 @@ router.post('/create', (req,res)=>{
     
 });
 
-router.get('/deletar', (req,res)=>{
+router.post('/deletar', (req,res)=>{
     mysqlConnection.execute(
-        'DELETE FROM user where username = ?', [req.body.userName],
+        'DELETE FROM user where idCandidato = ?', [req.body.idCandidato],
         (err, rows, fields)=>{
             if(!err){
                 res.json('Usuário deletado com sucesso!');
@@ -82,18 +94,15 @@ router.get('/deletar', (req,res)=>{
 
 router.post('/singin', (req,res)=>{
     const { userName, pass } = req.body;
-    mysqlConnection.query('SELECT * FROM user where username = ? and pass = ?', [userName, pass], 
+    mysqlConnection.execute('SELECT * FROM user where username = ? and pass = ?', [userName, pass], 
     (err, rows, fields)=>{
         if(!err){
             if(rows.length > 0){
-                //encriptando a senha 
-               let data = JSON.stringify(rows[0]);
-               const token = jwt.sign(data, 'stil');
-               res.json('Usuário encontrado!');
-               return true;
+                res.send(rows);
+               console.log('Usuário encontrado!');
             }else{
-                res.json('Incorretos!');
-                return false;
+                console.log('Incorretos!');
+                res.send(false);
             }
         }else{
             console.log(err);
@@ -118,5 +127,6 @@ function verifyToken(req, res, next){
         res.status(401).json('Token vazio!');
     }
 }
+
 
 module.exports = router;

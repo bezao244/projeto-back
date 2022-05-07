@@ -9,6 +9,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const userRoute = require('./api/routes/user');
-app.use('/user', userRoute);
+const oficioRoute = require('./api/routes/oficio')
 
+app.use('/user', userRoute);
+app.use('/oficio', oficioRoute);
 module.exports = app;
