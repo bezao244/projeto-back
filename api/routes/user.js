@@ -43,10 +43,6 @@ router.get('/adicionarNotaCandidato', (req,res)=>{
 });
 
 router.post('/filtrarPorNome', (req,res)=>{
-<<<<<<< HEAD
-=======
-    console.log(req.body.userName);
->>>>>>> f8c5bc92da546b87dbe11e1b9e3c16503e91b0e1
     return mysqlConnection.query('SELECT * FROM user where username = ?', [req.body.userName], (err, rows, fields)=>{
         if(!err){
            
