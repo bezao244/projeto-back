@@ -17,6 +17,68 @@ router.get('/', (req,res)=>{
     });
 });
 
+router.post('/listarPorEmpresa', (req, res) => {
+    mysqlConnection.query('SELECT * FROM user where idEmpresa = ?',[req.body.idEmpresa], (err, rows)=>{
+        if(!err){
+            res.send(rows);
+        }else{
+            res.send(false);
+        }
+    });
+});
+
+router.post('/listarPorAvaliador', (req, res) => {
+    mysqlConnection.query('SELECT * FROM user where idAvaliador = ?',[req.body.idAvaliador], (err, rows)=>{
+        if(!err){
+            res.send(rows);
+        }else{
+            res.send(false);
+        }
+    });
+});
+
+router.post('/filtrarAvaliador', (req,res) => {
+
+    let modal ={
+        idAvaliador: req.body.idAvaliador,
+        idOficio: req.body.idOficio,
+        nome: req.body.nome,
+        dataInclusao: req.body.dataInclusao
+    }
+
+    let query = `SELECT * FROM user where idAvaliador = ${modal.idAvaliador}`;
+
+    if(modal.idOficio != 0){
+    query += `AND idOficio =  ${modal.idOficio}`;        
+    }
+    if(modal.nome != 0){
+        query += `AND nome =  ${modal.nome}`;        
+    }
+    if(modal.dataInclusao != 0){
+        query += `AND datainclusao =  ${modal.dataInclusao}`;        
+    }
+
+    mysqlConnection.execute(query, (err, rows)=>{
+        if(!err){
+            res.send(rows);
+        }else{
+            res.send(false);
+        }
+    });
+
+});
+
+router.get('/filtrarPorNota', (req,res)=>{
+    mysqlConnection.query('SELECT * FROM user where nota is null', (err, rows)=>{
+        if(!err){
+            let users = rows;
+            res.send(users);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
 router.post('/adicionarOficioCandidato', (req, res)=>{
     mysqlConnection.query('select idOficio from oficio where descricao = ?', [req.body.descricao],
      (err,rows)=>{
@@ -71,21 +133,24 @@ router.post('/create', (req,res)=>{
     console.log(user);
     if(user.userName != '' && user.pass != '' && user.roleId != ''){
         user.save(user);
-        res.send('Usuário criado com sucesso!');
+        res.send(true);
     }else{
-        res.json('Erro ao salvar!, dados do usuário em branco!');
+        res.json(false);
     }
     
 });
 
 router.post('/deletar', (req,res)=>{
+    console.log('bateu aqui');
     mysqlConnection.execute(
         'DELETE FROM user where idCandidato = ?', [req.body.idCandidato],
         (err, rows, fields)=>{
             if(!err){
-                res.json('Usuário deletado com sucesso!');
+                var ok = 'Deletado com sucesso!';
+               res.send(ok);
+               console.log('Deletado')
             }else{
-                res.json('Erro ao deletar usuário', err);
+                res.send('Erro ao deletar usuário', err);
             }
         }
     )
