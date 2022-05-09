@@ -38,9 +38,29 @@ router.get('/buscarTipoConta', (req,res)=>{
     });
 });
 
+router.get('/buscarOficios', (req,res)=>{
+    return mysqlConnection.query('SELECT oficio FROM tboficio', (err, rows, fields)=>{
+        if(!err){
+            let oficios = rows;
+            res.json(oficios);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
 
 router.post('/listarPorEmpresa', (req, res) => {
     mysqlConnection.query('SELECT * FROM user where idEmpresa = ?',[req.body.idEmpresa], (err, rows)=>{
+        if(!err){
+            res.send(rows);
+        }else{
+            res.send(false);
+        }
+    });
+});
+router.post('/buscarNomeEmpresa', (req, res) => {
+    mysqlConnection.query('SELECT * FROM user where idUsuario = ?',[req.body.idUsuario], (err, rows)=>{
         if(!err){
             res.send(rows);
         }else{
@@ -140,7 +160,7 @@ router.get('/adicionarNotaCandidato', (req,res)=>{
     if(req.body.nota > 100){
         res.json('Nota muito alta');
     }else{
-        mysqlConnection.query('update user set nota = ? where idCandidato = ?',[req.body.nota, req.body.idCandidato], 
+        mysqlConnection.query('update tbcandidato set notafinal = ? where idCandidato = ?',[req.body.notafinal, req.body.idCandidato], 
     (err, rows)=>{
        if(!err){
            res.json('Nota cadastrada com sucesso!');
@@ -179,6 +199,12 @@ router.post('/createAdmin', (req, res)=>{
     res.send(true);
 });
 
+router.post('/createAvaliador', (req, res)=>{
+    var avaliador = new Avaliador(req.body.idUsuario, req.body.nome, req.body.cpf);
+    avaliador.save(avaliador);
+    res.send(true);
+});
+
 router.post('/deletar', (req,res)=>{
     mysqlConnection.execute(
         'DELETE FROM tbusuario where idUsuario = ?', [req.body.idUsuario],
@@ -202,11 +228,19 @@ router.post('/singin', (req,res)=>{
     (err, rows, fields)=>{
         if(!err){
             if(rows.length > 0){
-                res.send(rows);
+                var modal = {
+                    idUsuario: rows[0].idUsuario,
+                    tipoPerfil: rows[0].tipoPerfil,
+                    ok: true
+                }
+                res.send(modal);
                console.log('Usuário encontrado!');
             }else{
                 console.log('Incorretos!');
-                res.send(false);
+                var modal = {
+                    ok: false
+                }
+                res.send(modal);
             }
         }else{
             console.log(err);

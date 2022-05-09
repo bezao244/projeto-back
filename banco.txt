@@ -1,33 +1,15 @@
-create database angular;
-use angular;
-create table `user`(
-	idCandidato int primary key auto_increment,
-    userName varchar(50),
-     pass varchar(50),
-	roleId varchar(50),
-	nota int null
-);
-
-insert into user (userName, pass, roleId) values(
-'bezao', 'senha', 'Administrador'
-);
-insert into user (userName, pass, roleId) values(
-'pedro', 'senha', 'Avaliador'
-);
-insert into user (userName, pass, roleId) values(
-'samuel', 'senha', 'Empresa'
-);
-
-create table oficio(
+create table tboficio(
 	idOficio int primary key auto_increment,
-    descricao varchar(50) not null
+    oficio varchar(50) not null
 );
-insert into oficio(descricao) values(
-'Tec.Refrigeracao'
-);
-insert into oficio(descricao) values(
-'Tec.Enfermagem'
-);
-alter table user add idOficio int null;
 
-ALTER TABLE user ADD CONSTRAINT fk_cidade FOREIGN KEY ( idOficio ) REFERENCES oficio(idOficio) ;
+insert into tboficio(oficio) values(
+	'Furadeira'
+);
+
+create table tbcontas(
+	idConta int primary key auto_increment,
+    tipoConta varchar(50) not null
+);
+
+insert into tbcontas(tipoConta) values('Administrador'),('Empresa'), ('Avaliador');
