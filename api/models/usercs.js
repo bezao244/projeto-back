@@ -2,14 +2,14 @@ const res = require('express/lib/response');
 const mysqlConnection = require('../connection/connection');
 
 module.exports = class User{
-    constructor(userName, pass, roleId){
-        this.userName = userName;
-        this.pass = pass;
-        this.roleId= roleId;
+    constructor(email, senha, tipoPerfil){
+        this.email = email;
+        this.senha = senha;
+        this.tipoPerfil= tipoPerfil;
     }
     save(user){
         return mysqlConnection.execute(
-            'INSERT INTO user(userName, pass, roleId) VALUES(?, ?, ?)', [user.userName, user.pass, user.roleId],
+            'INSERT INTO tbusuario(email, senha, tipoperfil, datainclusao) VALUES(?, ?, ?, CURDATE())', [user.email, user.senha, user.tipoPerfil],
             (err, rows, fields)=>{
                 if(!err){
                     console.log('Usuário criado com sucesso!');
@@ -22,7 +22,7 @@ module.exports = class User{
 
     delete(user){
         return mysqlConnection.execute(
-            'DELETE FROM user where username = ?', [user.userName],
+            'DELETE FROM tbusuario idUsuario = ?', [user.idUsuario],
             (err, rows, fields)=>{
                 if(!err){
                     console.log('Usuário deletado com sucesso!');
