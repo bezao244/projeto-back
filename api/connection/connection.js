@@ -4,7 +4,7 @@ const mysqlConnection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'angular'
+    database: 'projetofsfx'
 });
 mysqlConnection.connect(err=>{
     if(err){
