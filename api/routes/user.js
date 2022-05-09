@@ -3,11 +3,21 @@ const router= express.Router();
 const mysqlConnection = require('../connection/connection');
 const jwt = require('jsonwebtoken');
 const User = require('../models/usercs');
+const Admin = require('../models/admincs');
+const Candidato = require('../models/candidatocs');
+const Avaliador = require('../models/avaliadorcs');
+const Empresa = require('../models/empresacs');
 
 var usuario = new User();
+var admin = new Admin();
+var candidato = new Candidato();
+var avaliador = new Avaliador();
+var empresa = new Empresa();
 
+
+//LISTAGEM
 router.get('/', (req,res)=>{
-    return mysqlConnection.query('SELECT * FROM user', (err, rows, fields)=>{
+    return mysqlConnection.query('SELECT * FROM tbusuario LIMIT 5', (err, rows, fields)=>{
         if(!err){
             let users = rows;
             res.json(users);
@@ -16,6 +26,18 @@ router.get('/', (req,res)=>{
         }
     });
 });
+
+router.get('/buscarTipoConta', (req,res)=>{
+    return mysqlConnection.query('SELECT tipoConta FROM tbcontas', (err, rows, fields)=>{
+        if(!err){
+            let contas = rows;
+            res.json(contas);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
 
 router.post('/listarPorEmpresa', (req, res) => {
     mysqlConnection.query('SELECT * FROM user where idEmpresa = ?',[req.body.idEmpresa], (err, rows)=>{
@@ -28,7 +50,7 @@ router.post('/listarPorEmpresa', (req, res) => {
 });
 
 router.post('/listarPorAvaliador', (req, res) => {
-    mysqlConnection.query('SELECT * FROM user where idAvaliador = ?',[req.body.idAvaliador], (err, rows)=>{
+    mysqlConnection.query('SELECT * FROM tbcandidato where idAvaliador = ?',[req.body.idAvaliador], (err, rows)=>{
         if(!err){
             res.send(rows);
         }else{
@@ -37,6 +59,8 @@ router.post('/listarPorAvaliador', (req, res) => {
     });
 });
 
+
+//FILTROS
 router.post('/filtrarAvaliador', (req,res) => {
 
     let modal ={
@@ -46,7 +70,7 @@ router.post('/filtrarAvaliador', (req,res) => {
         dataInclusao: req.body.dataInclusao
     }
 
-    let query = `SELECT * FROM user where idAvaliador = ${modal.idAvaliador}`;
+    let query = `SELECT * FROM tbcandidato where idAvaliador = ${modal.idAvaliador}`;
 
     if(modal.idOficio != 0){
     query += `AND idOficio =  ${modal.idOficio}`;        
@@ -69,7 +93,7 @@ router.post('/filtrarAvaliador', (req,res) => {
 });
 
 router.get('/filtrarPorNota', (req,res)=>{
-    mysqlConnection.query('SELECT * FROM user where nota is null', (err, rows)=>{
+    mysqlConnection.query('SELECT * FROM tbcandidato where notafinal is null', (err, rows)=>{
         if(!err){
             let users = rows;
             res.send(users);
@@ -79,6 +103,29 @@ router.get('/filtrarPorNota', (req,res)=>{
     });
 });
 
+router.post('/filtrarPorNome', (req,res)=>{
+    return mysqlConnection.query('SELECT * FROM tbusuario where email = ?', [req.body.email], (err, rows, fields)=>{
+        if(!err){
+            let users = rows;
+            res.send(users);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
+router.get('/filtrarPorTipo', (req,res)=>{
+    return mysqlConnection.query('SELECT * FROM tbusuario where tipoperfil = ?', [req.body.tipoPerfil], (err, rows, fields)=>{
+        if(!err){
+            let users = rows;
+            res.send(users);
+        }else{
+            console.log(err);
+        }
+    });
+});
+
+//ADICIONAR
 router.post('/adicionarOficioCandidato', (req, res)=>{
     mysqlConnection.query('select idOficio from oficio where descricao = ?', [req.body.descricao],
      (err,rows)=>{
@@ -104,53 +151,44 @@ router.get('/adicionarNotaCandidato', (req,res)=>{
     }
 });
 
-router.post('/filtrarPorNome', (req,res)=>{
-    return mysqlConnection.query('SELECT * FROM user where username = ?', [req.body.userName], (err, rows, fields)=>{
-        if(!err){
-           
-            let users = rows;
-            res.send(users);
-        }else{
-            console.log(err);
-        }
-    });
-});
 
-router.get('/filtrarPorTipo', (req,res)=>{
-    return mysqlConnection.query('SELECT * FROM user where roleid = ?', [req.body.roleId], (err, rows, fields)=>{
-        if(!err){
-            let users = rows;
-            res.send(users);
-        }else{
-            console.log(err);
-        }
-    });
-});
-
+//BÁSICOS
 router.post('/create', (req,res)=>{
-    let user = new User(req.body.userName, req.body.pass, req.body.roleId);
+    let user = new User(req.body.email, req.body.senha, req.body.tipoPerfil);
 
     console.log(user);
-    if(user.userName != '' && user.pass != '' && user.roleId != ''){
+    if(user.email != '' && user.senha != '' && user.tipoPerfil != ''){
         user.save(user);
-        res.send(true);
+        mysqlConnection.query('SELECT idUsuario FROM tbusuario where email = ?', [user.email], 
+        (err, rows)=>{
+            if(!err){
+                res.send(rows);
+            }else{
+                 res.send(false)
+            }
+        } );
     }else{
-        res.json(false);
+        res.send(false);
     }
     
 });
 
+router.post('/createAdmin', (req, res)=>{
+    var admin = new Admin(req.body.idUsuario, req.body.nome);
+    admin.save(admin);
+    res.send(true);
+});
+
 router.post('/deletar', (req,res)=>{
-    console.log('bateu aqui');
     mysqlConnection.execute(
-        'DELETE FROM user where idCandidato = ?', [req.body.idCandidato],
+        'DELETE FROM tbusuario where idUsuario = ?', [req.body.idUsuario],
         (err, rows, fields)=>{
             if(!err){
-                var ok = 'Deletado com sucesso!';
-               res.send(ok);
-               console.log('Deletado')
+               res.send(true);
+               console.log('Deletado');
             }else{
-                res.send('Erro ao deletar usuário', err);
+                res.send(false);
+                console.log(err);
             }
         }
     )
@@ -159,8 +197,8 @@ router.post('/deletar', (req,res)=>{
 
 
 router.post('/singin', (req,res)=>{
-    const { userName, pass } = req.body;
-    mysqlConnection.execute('SELECT * FROM user where username = ? and pass = ?', [userName, pass], 
+    const { email, senha } = req.body;
+    mysqlConnection.execute('SELECT * FROM tbusuario where email = ? and senha = ?', [email, senha], 
     (err, rows, fields)=>{
         if(!err){
             if(rows.length > 0){
