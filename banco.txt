@@ -13,3 +13,22 @@ create table tbcontas(
 );
 
 insert into tbcontas(tipoConta) values('Administrador'),('Empresa'), ('Avaliador');
+
+create table tbempresa(
+idEmpresa int primary key auto_increment,
+idUsuario int not null,
+nomeEmpresa varchar(40) not null,
+ cnpj varchar(20) not null,
+ razaoSocial varchar(50) not null,
+ dsLogradouro varchar(60) not null,
+ cep varchar(9) not null,
+ telResp bigint not null,
+ telFixo bigint not null,
+ cdAtiv int not null,
+ nomeResp varchar(50) not null,
+ nmFantasia varchar(40) not null,
+ constraint pegUsuario foreign key (idUsuario) references tbusuario(idUsuario) on update cascade on delete cascade
+ );
+ insert into tbempresa(idUsuario, nomeEmpresa, cnpj, razaoSocial, dsLogradouro, cep, telResp, telFixo, cdAtiv, nomeResp, nmFantasia) values(
+ 1, 'House', '000000000', 'House', 'Ipatinga', '35162098', '31971466738','31971466738', 1, 'Bezao', 'House'
+ );

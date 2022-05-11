@@ -60,9 +60,12 @@ router.post('/listarPorEmpresa', (req, res) => {
     });
 });
 router.post('/buscarNomeEmpresa', (req, res) => {
-    mysqlConnection.query('SELECT * FROM user where idUsuario = ?',[req.body.idUsuario], (err, rows)=>{
+    mysqlConnection.query('SELECT nomeEmpresa FROM tbempresa where idUsuario = ?',[req.body.idUsuario], (err, rows)=>{
         if(!err){
-            res.send(rows);
+            let modal = {
+                nomeEmpresa: rows[0].nomeEmpresa
+            }
+            res.send(modal);
         }else{
             res.send(false);
         }
@@ -202,6 +205,12 @@ router.post('/createAdmin', (req, res)=>{
 router.post('/createAvaliador', (req, res)=>{
     var avaliador = new Avaliador(req.body.idUsuario, req.body.nome, req.body.cpf);
     avaliador.save(avaliador);
+    res.send(true);
+});
+
+router.post('/createEmpresa', (req, res)=>{
+    var empresa = new Empresa(req.body.idUsuario, req.body.nome, req.body.cpf);
+    empresa.save(empresa);
     res.send(true);
 });
 
