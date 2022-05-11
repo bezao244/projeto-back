@@ -1,3 +1,25 @@
+create table tbusuario(
+	idUsuario int primary key auto_increment,
+    email varchar(50) not null,
+    senha varchar(50) not null,
+    tipoPerfil varchar(50) not null
+);
+ 
+insert into tbusuario(email, senha, tipoPerfil)  values(
+	'admin', 'senha', 'Administrador' 
+), (
+	'empresa', 'senha', 'Empresa'
+), (
+	'avaliador', 'senha', 'Avaliador'
+);
+create table tbadmin(
+	idUsuario int primary key,
+	nome varchar(50) not null
+);
+ insert into tbadmin values(
+ 1, 'testeAdmin'
+ );
+
 create table tboficio(
 	idOficio int primary key auto_increment,
     oficio varchar(50) not null
