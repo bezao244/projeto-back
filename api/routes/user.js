@@ -72,6 +72,17 @@ router.post('/buscarNomeEmpresa', (req, res) => {
     });
 });
 
+router.post('/buscarDadosCandidato', (req, res) => {
+    mysqlConnection.query('SELECT * FROM tbcandidato where idCandidato = ?',[req.body.idCandidato], (err, rows)=>{
+        if(!err){
+            res.send(rows);
+        }else{
+            res.send(false);
+        }
+    });
+});
+
+
 router.post('/listarPorAvaliador', (req, res) => {
     mysqlConnection.query('SELECT * FROM tbcandidato where idAvaliador = ?',[req.body.idAvaliador], (err, rows)=>{
         if(!err){
@@ -209,7 +220,7 @@ router.post('/createAvaliador', (req, res)=>{
 });
 
 router.post('/createEmpresa', (req, res)=>{
-    var empresa = new Empresa(req.body.idUsuario, req.body.nome, req.body.cpf);
+    var empresa = new Empresa(req.body.idUsuario, req.body.nomeEmpresa, req.body.cnpj, req.body.razaoSocial, req.body.dsLogradouro, req.body.cep, req.body.telResp, req.body.telFixo, req.body.nomeResp, req.body.nmFantasia);
     empresa.save(empresa);
     res.send(true);
 });
