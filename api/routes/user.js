@@ -59,6 +59,15 @@ router.post('/listarPorEmpresa', (req, res) => {
         }
     });
 });
+router.get('/listarCandidatos', (req, res) => {
+    mysqlConnection.query('SELECT * FROM tbcandidato ',(err, rows)=>{
+        if(!err){
+            res.send(rows);
+        }else{
+            res.send(false);
+        }
+    });
+});
 router.post('/buscarNomeEmpresa', (req, res) => {
     mysqlConnection.query('SELECT nomeEmpresa FROM tbempresa where idUsuario = ?',[req.body.idUsuario], (err, rows)=>{
         if(!err){
@@ -66,6 +75,15 @@ router.post('/buscarNomeEmpresa', (req, res) => {
                 nomeEmpresa: rows[0].nomeEmpresa
             }
             res.send(modal);
+        }else{
+            res.send(false);
+        }
+    });
+});
+router.get('/buscarAvaliadores', (req, res) => {
+    mysqlConnection.query('SELECT nome FROM tbavaliador', (err, rows)=>{
+        if(!err){
+            res.send(rows);
         }else{
             res.send(false);
         }
@@ -170,15 +188,17 @@ router.post('/adicionarOficioCandidato', (req, res)=>{
      });
 });
 
-router.get('/adicionarNotaCandidato', (req,res)=>{
+router.post('/adicionarNotaCandidato', (req,res)=>{
     if(req.body.nota > 100){
         res.json('Nota muito alta');
     }else{
-        mysqlConnection.query('update tbcandidato set notafinal = ? where idCandidato = ?',[req.body.notafinal, req.body.idCandidato], 
+        mysqlConnection.query('update tbcandidato set notafinal = ? where idCandidato = ?',[req.body.notaFinal, req.body.idCandidato], 
     (err, rows)=>{
        if(!err){
-           res.json('Nota cadastrada com sucesso!');
+           console.log('nota cadastrada');
+          res.send(true);
        }else{
+           res.send(false);
            console.log(err);
        }
    });
