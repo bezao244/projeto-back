@@ -1,23 +1,35 @@
 const res = require('express/lib/response');
 const mysqlConnection = require('../connection/connection');
 
-module.exports = class Candidato{
-    constructor(nome, cpf, idAvaliador, oficio){
+module.exports = class Candidato {
+    constructor(nome, cpf, idAvaliador, oficio) {
         this.nome = nome;
         this.cpf = cpf;
         this.idAvaliador = idAvaliador;
         this.oficio = oficio;
     }
-    save(user){
+    save(user) {
         return mysqlConnection.execute(
             'INSERT INTO tbcandidato(nome, cpf, datainclusao, idavaliador, oficio) VALUES(?, ?, CURRENT_DATE(),?, ?)', [user.nome, user.cpf, user.idAvaliador, user.oficio],
-            (err, rows, fields)=>{
-                if(!err){
+            (err, rows, fields) => {
+                if (!err) {
                     console.log('Candidato criado com sucesso!');
-                }else{
+                } else {
                     console.log('Erro ao criar candidato', err);
                 }
             }
         );
+    }
+    delete(user) {
+        return mysqlConnection.execute(
+            'DELETE FROM tbcandidato idCandidato = ?', [user],
+            (err, rows) => {
+                if (!err) {
+                    console.log('Candidato deletado com sucesso!');
+                } else {
+                    console.log('Erro ao deletar candidato', err);
+                }
+            }
+        )
     }
 }

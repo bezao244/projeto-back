@@ -22,11 +22,17 @@ create table tbadmin(
 
 create table tboficio(
 	idOficio int primary key auto_increment,
-    oficio varchar(50) not null
+    oficio varchar(40) not null
 );
 
 insert into tboficio(oficio) values(
-	'Furadeira'
+'Tec.Refrigeracao'
+), (
+'Tec.Eletrica'
+),(
+'Tec.Soldagem'
+),(
+'Tec.Brasagem'
 );
 
 create table tbcontas(

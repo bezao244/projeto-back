@@ -16,7 +16,6 @@ router.get('/buscarOficios', (req,res)=>{
 });
 
 router.post('/filtarPor', (req,res)=>{
-    
     return mysqlConnection.query('SELECT * FROM tboficio WHERE ', (err, rows, fields)=>{
         if(!err){
             let oficios = rows;
