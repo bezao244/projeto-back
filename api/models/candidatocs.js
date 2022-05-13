@@ -22,7 +22,7 @@ module.exports = class Candidato {
     }
     delete(user) {
         return mysqlConnection.execute(
-            'DELETE FROM tbcandidato idCandidato = ?', [user],
+            'DELETE FROM tbcandidato where idCandidato = ?', [user],
             (err, rows) => {
                 if (!err) {
                     console.log('Candidato deletado com sucesso!');

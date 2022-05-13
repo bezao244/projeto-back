@@ -33,6 +33,11 @@ router.get('/filtrarPorNota', (req, res) => {
     });
 });
 
+router.post('/filtrar', (req, res) => {
+    console.log(req.body);
+
+});
+
 router.post('/adicionarNotaCandidato', (req, res) => {
     mysqlConnection.query('update tbcandidato set notafinal = ? where idCandidato = ?', [req.body.notaFinal, req.body.idCandidato],
         (err, rows) => {
@@ -48,7 +53,6 @@ router.post('/adicionarNotaCandidato', (req, res) => {
 
 router.post('/createCandidato', (req, res) => {
     var candidato = new Candidato(req.body.nome, req.body.cpf, req.body.idAvaliador, req.body.oficio);
-    console.log(candidato);
     candidato.save(candidato);
     res.send(true);
 });

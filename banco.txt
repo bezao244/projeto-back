@@ -2,16 +2,18 @@ create table tbusuario(
 	idUsuario int primary key auto_increment,
     email varchar(50) not null,
     senha varchar(50) not null,
-    tipoPerfil varchar(50) not null
+    tipoPerfil varchar(50) not null,
+    dataInclusao DATE not null
 );
  
-insert into tbusuario(email, senha, tipoPerfil)  values(
-	'admin', 'senha', 'Administrador' 
+insert into tbusuario(email, senha, tipoPerfil, datainclusao)  values(
+	'admin', 'senha', 'Administrador', current_date() 
 ), (
-	'empresa', 'senha', 'Empresa'
+	'empresa', 'senha', 'Empresa', current_date() 
 ), (
-	'avaliador', 'senha', 'Avaliador'
+	'avaliador', 'senha', 'Avaliador', current_date() 
 );
+
 create table tbadmin(
 	idUsuario int primary key,
 	nome varchar(50) not null
@@ -60,3 +62,21 @@ nomeEmpresa varchar(40) not null,
  insert into tbempresa(idUsuario, nomeEmpresa, cnpj, razaoSocial, dsLogradouro, cep, telResp, telFixo, cdAtiv, nomeResp, nmFantasia) values(
  1, 'House', '000000000', 'House', 'Ipatinga', '35162098', '31971466738','31971466738', 1, 'Bezao', 'House'
  );
+
+ create table tbavaliador(
+	idAvaliador int  auto_increment,
+	idUsuario int ,
+    nome varchar(50) not null,
+    cpf varchar(11) not null,
+    primary key(idAvaliador, idUsuario),
+    constraint pegUsuarioAvaliador foreign key (idUsuario) references tbusuario(idUsuario) on update cascade on delete cascade
+);
+create table tbcandidato(
+	idCandidato int primary key auto_increment,
+    nome varchar(50) not null,
+    cpf varchar(11) not null,
+    dataInclusao DATE not null,
+    idAvaliador int not null,
+    oficio varchar(50) not null,
+    constraint pegAvaliadorCandidato foreign key (idAvaliador) references tbavaliador(idAvaliador) on update cascade on delete cascade
+);
