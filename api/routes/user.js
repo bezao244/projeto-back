@@ -38,18 +38,6 @@ router.get('/buscarTipoConta', (req,res)=>{
     });
 });
 
-router.get('/buscarOficios', (req,res)=>{
-    return mysqlConnection.query('SELECT oficio FROM tboficio', (err, rows, fields)=>{
-        if(!err){
-            let oficios = rows;
-            res.json(oficios);
-        }else{
-            console.log(err);
-        }
-    });
-});
-
-
 router.post('/listarPorEmpresa', (req, res) => {
     mysqlConnection.query('SELECT * FROM user where idEmpresa = ?',[req.body.idEmpresa], (err, rows)=>{
         if(!err){
@@ -81,7 +69,7 @@ router.post('/buscarNomeEmpresa', (req, res) => {
     });
 });
 router.get('/buscarAvaliadores', (req, res) => {
-    mysqlConnection.query('SELECT nome FROM tbavaliador', (err, rows)=>{
+    mysqlConnection.query('SELECT * FROM tbavaliador', (err, rows)=>{
         if(!err){
             res.send(rows);
         }else{
@@ -245,6 +233,13 @@ router.post('/createEmpresa', (req, res)=>{
     res.send(true);
 });
 
+router.post('/createCandidato', (req, res)=>{
+    var candidato = new Candidato(req.body.nome, req.body.cpf, req.body.idAvaliador, req.body.oficio);
+    console.log(candidato);
+    candidato.save(candidato);
+    res.send(true);
+});
+
 router.post('/deletar', (req,res)=>{
     mysqlConnection.execute(
         'DELETE FROM tbusuario where idUsuario = ?', [req.body.idUsuario],
@@ -260,6 +255,20 @@ router.post('/deletar', (req,res)=>{
     )
 });
 
+router.post('/deletarCandidato', (req,res)=>{
+    mysqlConnection.execute(
+        'DELETE FROM tbcandidato where idCandidato = ?', [req.body.idCandidato],
+        (err, rows, fields)=>{
+            if(!err){
+               res.send(true);
+               console.log('Candidato deletado!');
+            }else{
+                res.send(false);
+                console.log(err);
+            }
+        }
+    )
+});
 
 
 router.post('/singin', (req,res)=>{

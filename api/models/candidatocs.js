@@ -10,7 +10,7 @@ module.exports = class Candidato{
     }
     save(user){
         return mysqlConnection.execute(
-            'INSERT INTO tbcandidato(nome, cpf, datainclusao, idavaliador, oficio) VALUES(?, ?, CURDDATE(),?, ?)', [user.nome, user.cpf, user.idAvaliador, user.oficio],
+            'INSERT INTO tbcandidato(nome, cpf, datainclusao, idavaliador, oficio) VALUES(?, ?, CURRENT_DATE(),?, ?)', [user.nome, user.cpf, user.idAvaliador, user.oficio],
             (err, rows, fields)=>{
                 if(!err){
                     console.log('Candidato criado com sucesso!');
