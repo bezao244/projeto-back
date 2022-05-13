@@ -22,9 +22,9 @@ module.exports = class Admin{
             'DELETE FROM tboficio where idOficio = ?', [user],
             (err, rows, fields)=>{
                 if(!err){
-                    console.log('Usuário deletado com sucesso!');
+                    console.log('Oficio deletado com sucesso!');
                 }else{
-                    console.log('Erro ao deletar usuário', err);
+                    console.log('Erro ao deletar oficio', err);
                 }
             }
         )
