@@ -34,7 +34,14 @@ router.get('/filtrarPorNota', (req, res) => {
 });
 
 router.post('/filtrar', (req, res) => {
-    console.log(req.body);
+    let nome = req.body.nome + '%';
+    mysqlConnection.query('SELECT * FROM tbcandidato WHERE nome or cpf LIKE ?', [nome], (err, rows) => {
+        if (!err) {
+            res.send(rows);
+        } else {
+            console.log(err);
+        }
+    });
 
 });
 

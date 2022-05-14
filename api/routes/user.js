@@ -4,18 +4,9 @@ const mysqlConnection = require('../connection/connection');
 const jwt = require('jsonwebtoken');
 const User = require('../models/usercs');
 const Admin = require('../models/admincs');
-const Candidato = require('../models/candidatocs');
-const Avaliador = require('../models/avaliadorcs');
-const Empresa = require('../models/empresacs');
 
 var usuario = new User();
-var admin = new Admin();
-var candidato = new Candidato();
-var avaliador = new Avaliador();
-var empresa = new Empresa();
 
-
-//LISTAGEM
 router.get('/', (req, res) => {
     return mysqlConnection.query('SELECT * FROM tbusuario LIMIT 5', (err, rows, fields) => {
         if (!err) {
@@ -38,83 +29,9 @@ router.get('/buscarTipoConta', (req, res) => {
     });
 });
 
-router.post('/listarPorEmpresa', (req, res) => {
-    mysqlConnection.query('SELECT * FROM user where idEmpresa = ?', [req.body.idEmpresa], (err, rows) => {
-        if (!err) {
-            res.send(rows);
-        } else {
-            res.send(false);
-        }
-    });
-});
-
-router.post('/buscarNomeEmpresa', (req, res) => {
-    mysqlConnection.query('SELECT nomeEmpresa FROM tbempresa where idUsuario = ?', [req.body.idUsuario], (err, rows) => {
-        if (!err) {
-            let modal = {
-                nomeEmpresa: rows[0].nomeEmpresa
-            }
-            res.send(modal);
-        } else {
-            res.send(false);
-        }
-    });
-});
-router.get('/buscarAvaliadores', (req, res) => {
-    mysqlConnection.query('SELECT * FROM tbavaliador', (err, rows) => {
-        if (!err) {
-            res.send(rows);
-        } else {
-            res.send(false);
-        }
-    });
-});
-
-router.post('/listarPorAvaliador', (req, res) => {
-    mysqlConnection.query('SELECT * FROM tbcandidato where idAvaliador = ?', [req.body.idAvaliador], (err, rows) => {
-        if (!err) {
-            res.send(rows);
-        } else {
-            res.send(false);
-        }
-    });
-});
-
-
-//FILTROS
-router.post('/filtrarAvaliador', (req, res) => {
-
-    let modal = {
-        idAvaliador: req.body.idAvaliador,
-        idOficio: req.body.idOficio,
-        nome: req.body.nome,
-        dataInclusao: req.body.dataInclusao
-    }
-
-    let query = `SELECT * FROM tbcandidato where idAvaliador = ${modal.idAvaliador}`;
-
-    if (modal.idOficio != 0) {
-        query += `AND idOficio =  ${modal.idOficio}`;
-    }
-    if (modal.nome != 0) {
-        query += `AND nome =  ${modal.nome}`;
-    }
-    if (modal.dataInclusao != 0) {
-        query += `AND datainclusao =  ${modal.dataInclusao}`;
-    }
-
-    mysqlConnection.execute(query, (err, rows) => {
-        if (!err) {
-            res.send(rows);
-        } else {
-            res.send(false);
-        }
-    });
-
-});
-
 router.post('/filtrarPorNome', (req, res) => {
-    return mysqlConnection.query('SELECT * FROM tbusuario where email = ?', [req.body.email], (err, rows, fields) => {
+    let parametro = req.body.email + '%';
+    return mysqlConnection.query('SELECT * FROM tbusuario WHERE email LIKE ? or idUsuario LIKE ?', [parametro, parametro], (err, rows, fields) => {
         if (!err) {
             let users = rows;
             res.send(users);
@@ -173,17 +90,9 @@ router.post('/createAdmin', (req, res) => {
     res.send(true);
 });
 
-router.post('/createAvaliador', (req, res) => {
-    var avaliador = new Avaliador(req.body.idUsuario, req.body.nome, req.body.cpf);
-    avaliador.save(avaliador);
-    res.send(true);
-});
 
-router.post('/createEmpresa', (req, res) => {
-    var empresa = new Empresa(req.body.idUsuario, req.body.nomeEmpresa, req.body.cnpj, req.body.razaoSocial, req.body.dsLogradouro, req.body.cep, req.body.telResp, req.body.telFixo, req.body.nomeResp, req.body.nmFantasia);
-    empresa.save(empresa);
-    res.send(true);
-});
+
+
 
 router.post('/deletar', (req, res) => {
     mysqlConnection.execute(
