@@ -1,19 +1,19 @@
 const res = require('express/lib/response');
 const mysqlConnection = require('../connection/connection');
 
-module.exports = class Avaliador{
-    constructor(idUsuario, nome, cpf){
+module.exports = class Avaliador {
+    constructor(idUsuario, nome, cpf) {
         this.idUsuario = idUsuario,
-        this.nome = nome,
-        this.cpf = cpf
+            this.nome = nome,
+            this.cpf = cpf
     }
-    save(user){
+    save(user) {
         return mysqlConnection.execute(
-            'INSERT INTO tbavaliador(idUsuario, nome, cpf) VALUES(?, ?, ?)', [user.idUsuario, user.nome, user.cpf],
-            (err, rows, fields)=>{
-                if(!err){
+            'INSERT INTO tbavaliador(idUsuario, idAvaliador, nome, cpf) VALUES(?, ?, ?, ?)', [user.idUsuario, user.idUsuario, user.nome, user.cpf],
+            (err, rows, fields) => {
+                if (!err) {
                     console.log('Avaliador criado com sucesso!');
-                }else{
+                } else {
                     console.log('Erro ao criar avaliador', err);
                 }
             }

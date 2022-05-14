@@ -3,6 +3,19 @@ const router = express.Router();
 const mysqlConnection = require('../connection/connection');
 const Avaliador = require('../models/avaliadorcs');
 
+
+router.post('/buscarIdAvaliador', (req, res) => {
+    mysqlConnection.query('SELECT idAvaliador FROM tbavaliador WHERE idUsuario = ?', [req.body.idUsuario], (err, rows) => {
+        if (!err) {
+            var modal = {
+                idAvaliador: rows[0].idAvaliador
+            }
+            res.send(modal);
+        } else {
+            res.send(false);
+        }
+    });
+});
 router.post('/createAvaliador', (req, res) => {
     var avaliador = new Avaliador(req.body.idUsuario, req.body.nome, req.body.cpf);
     avaliador.save(avaliador);

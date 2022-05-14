@@ -3,8 +3,18 @@ const router = express.Router();
 const mysqlConnection = require('../connection/connection');
 const Empresa = require('../models/empresacs');
 
+router.get('/listarEmpresa', (re, res) => {
+    mysqlConnection.query('SELECT * FROM tbempresa', (err, rows) => {
+        if (!err) {
+            res.send(rows);
+        } else {
+            res.send(false);
+        }
+    })
+})
 router.post('/listarPorEmpresa', (req, res) => {
-    mysqlConnection.query('SELECT * FROM user where idEmpresa = ?', [req.body.idEmpresa], (err, rows) => {
+
+    mysqlConnection.query('SELECT * FROM tbcandidato where idEmpresa = ?', [req.body.idUsuario], (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
@@ -14,8 +24,10 @@ router.post('/listarPorEmpresa', (req, res) => {
 });
 
 router.post('/buscarNomeEmpresa', (req, res) => {
-    mysqlConnection.query('SELECT nomeEmpresa FROM tbempresa where idUsuario = ?', [req.body.idUsuario], (err, rows) => {
+    mysqlConnection.query('SELECT nomeEmpresa FROM tbempresa WHERE idUsuario = ?', [req.body.idUsuario], (err, rows) => {
+        console.log(req.body);
         if (!err) {
+            console.log(rows);
             let modal = {
                 nomeEmpresa: rows[0].nomeEmpresa
             }

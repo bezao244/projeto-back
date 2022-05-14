@@ -59,7 +59,7 @@ router.post('/adicionarNotaCandidato', (req, res) => {
 });
 
 router.post('/createCandidato', (req, res) => {
-    var candidato = new Candidato(req.body.nome, req.body.cpf, req.body.idAvaliador, req.body.oficio);
+    var candidato = new Candidato(req.body.nome, req.body.cpf, req.body.idAvaliador, req.body.idEmpresa, req.body.oficio);
     candidato.save(candidato);
     res.send(true);
 });
