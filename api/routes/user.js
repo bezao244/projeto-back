@@ -29,9 +29,9 @@ router.get('/buscarTipoConta', (req, res) => {
     });
 });
 
-router.post('/filtrarPorNome', (req, res) => {
-    let parametro = req.body.email + '%';
-    return mysqlConnection.query('SELECT * FROM tbusuario WHERE email LIKE ? or idUsuario LIKE ?', [parametro, parametro], (err, rows, fields) => {
+router.post('/buscarDadosUsuario', (req, res) => {
+    console.log(req.body)
+    return mysqlConnection.query('SELECT * FROM tbusuario WHERE idUsuario = ?', [req.body.idUsuario], (err, rows, fields) => {
         if (!err) {
             let users = rows;
             res.send(users);

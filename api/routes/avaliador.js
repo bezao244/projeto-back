@@ -32,7 +32,7 @@ router.get('/buscarAvaliadores', (req, res) => {
 });
 
 router.post('/listarPorAvaliador', (req, res) => {
-    mysqlConnection.query('SELECT * FROM tbcandidato where idAvaliador = ?', [req.body.idAvaliador], (err, rows) => {
+    mysqlConnection.query('SELECT * FROM tbcandidato where idAvaliador = ?', [req.body.idUsuario], (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
@@ -47,25 +47,28 @@ router.post('/filtrarAvaliador', (req, res) => {
 
     let modal = {
         idAvaliador: req.body.idAvaliador,
-        idOficio: req.body.idOficio,
         nome: req.body.nome,
+        oficio: req.body.oficio,
         dataInclusao: req.body.dataInclusao
     }
 
     let query = `SELECT * FROM tbcandidato where idAvaliador = ${modal.idAvaliador}`;
 
-    if (modal.idOficio != 0) {
-        query += `AND idOficio =  ${modal.idOficio}`;
+    if (modal.oficio != null) {
+        console.log(modal.oficio);
+        query += ` AND oficio =  '${modal.oficio}'`;
     }
-    if (modal.nome != 0) {
-        query += `AND nome =  ${modal.nome}`;
+    if (modal.nome != '') {
+        let nome = modal.nome + '%';
+        query += ` AND nome LIKE '${nome}'`;
     }
-    if (modal.dataInclusao != 0) {
-        query += `AND datainclusao =  ${modal.dataInclusao}`;
+    if (modal.dataInclusao != null) {
+        query += ` AND datainclusao =  ${modal.dataInclusao}`;
     }
-
+    console.log(query);
     mysqlConnection.execute(query, (err, rows) => {
         if (!err) {
+            console.log('filtro ok');
             res.send(rows);
         } else {
             res.send(false);
