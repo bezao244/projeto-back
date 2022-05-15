@@ -8,7 +8,7 @@ const Admin = require('../models/admincs');
 var usuario = new User();
 
 router.get('/', (req, res) => {
-    return mysqlConnection.query('SELECT * FROM tbusuario LIMIT 5', (err, rows, fields) => {
+    return mysqlConnection.query('SELECT * FROM tbusuario', (err, rows, fields) => {
         if (!err) {
             let users = rows;
             res.json(users);

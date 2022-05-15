@@ -5,7 +5,7 @@ const Avaliador = require('../models/avaliadorcs');
 
 
 router.post('/buscarIdAvaliador', (req, res) => {
-    mysqlConnection.query('SELECT idAvaliador FROM tbavaliador WHERE idUsuario = ?', [req.body.idUsuario], (err, rows) => {
+    mysqlConnection.query('SELECT * FROM tbavaliador WHERE idUsuario = ?', [req.body.idUsuario], (err, rows) => {
         if (!err) {
             var modal = {
                 idAvaliador: rows[0].idAvaliador
