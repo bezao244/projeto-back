@@ -35,14 +35,33 @@ router.get('/filtrarPorNota', (req, res) => {
 
 router.post('/filtrar', (req, res) => {
     let nome = req.body.nome + '%';
-    mysqlConnection.query('SELECT * FROM tbcandidato WHERE nome or cpf LIKE ?', [nome], (err, rows) => {
+    mysqlConnection.query('SELECT * FROM tbcandidato WHERE nome LIKE ? OR cpf LIKE ?', [nome, nome], (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
             console.log(err);
         }
     });
+});
 
+router.post('/filtrarSemNota', (req, res) => {
+    let query = `SELECT * FROM tbcandidato where notafinal is null`;
+
+    if (req.body.nome != null) {
+        let nome = req.body.nome + '%';
+        query += ` AND nome LIKE '${nome}'`;
+    }
+    if (req.body.cpf != null) {
+        let cpf = req.body.cpf + '%';
+        query += ` AND cpf LIKE '${cpf}'`;
+    }
+    mysqlConnection.query(query, (err, rows) => {
+        if (!err) {
+            res.send(rows);
+        } else {
+            console.log(err);
+        }
+    });
 });
 
 router.post('/adicionarNotaCandidato', (req, res) => {

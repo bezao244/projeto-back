@@ -41,6 +41,18 @@ router.post('/buscarDadosUsuario', (req, res) => {
     });
 });
 
+router.post('/filtrar', (req, res) => {
+    let nome = req.body.parametro + '%';
+    mysqlConnection.query('SELECT * FROM tbusuario WHERE idUsuario LIKE ? or email LIKE ?', [nome, nome], (err, rows) => {
+        if (!err) {
+
+            res.send(rows);
+        } else {
+            res.send(false);
+        }
+    });
+});
+
 router.get('/filtrarPorTipo', (req, res) => {
     return mysqlConnection.query('SELECT * FROM tbusuario where tipoperfil = ?', [req.body.tipoPerfil], (err, rows, fields) => {
         if (!err) {

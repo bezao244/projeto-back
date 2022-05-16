@@ -65,10 +65,8 @@ router.post('/filtrarAvaliador', (req, res) => {
     if (modal.dataInclusao != null) {
         query += ` AND datainclusao =  ${modal.dataInclusao}`;
     }
-    console.log(query);
     mysqlConnection.execute(query, (err, rows) => {
         if (!err) {
-            console.log('filtro ok');
             res.send(rows);
         } else {
             res.send(false);
