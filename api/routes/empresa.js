@@ -23,6 +23,28 @@ router.post('/listarPorEmpresa', (req, res) => {
     });
 });
 
+router.post('/filtrarEmpresa', (req, res) => {
+    let query = `SELECT * FROM tbcandidato where idEmpresa = ${req.body.idEmpresa}`;
+    if (req.body.nome != null) {
+        let nome = req.body.nome + '%';
+        query += ` AND nome LIKE '${nome}'`;
+    }
+    if (req.body.oficio != null) {
+        query += ` AND oficio = '${req.body.oficio}'`;
+    }
+    if (req.body.dataInclusao != null) {
+        query += ` AND dataInclusao = '${req.body.dataInclusao}'`;
+    }
+    console.log(query);
+    mysqlConnection.query(query, (err, rows) => {
+        if (!err) {
+            res.send(rows);
+        } else {
+            res.send(false);
+        }
+    });
+});
+
 router.post('/buscarNomeEmpresa', (req, res) => {
     mysqlConnection.query('SELECT nomeEmpresa FROM tbempresa WHERE idUsuario = ?', [req.body.idUsuario], (err, rows) => {
         console.log(req.body);
