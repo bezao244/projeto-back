@@ -3,7 +3,7 @@ const router = express.Router();
 const mysqlConnection = require('../connection/connection');
 const Empresa = require('../models/empresacs');
 
-router.get('/listarEmpresa', (re, res) => {
+router.get('/listarEmpresa', (req, res) => {
     mysqlConnection.query('SELECT * FROM tbempresa', (err, rows) => {
         if (!err) {
             res.send(rows);

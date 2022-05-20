@@ -1,3 +1,6 @@
+create database projetoFsfx;
+use projetoFsfx;
+
 create table tbusuario(
 	idUsuario int primary key auto_increment,
     email varchar(50) not null,
@@ -8,10 +11,6 @@ create table tbusuario(
  
 insert into tbusuario(email, senha, tipoPerfil, datainclusao)  values(
 	'admin', 'senha', 'Administrador', current_date() 
-), (
-	'empresa', 'senha', 'Empresa', current_date() 
-), (
-	'avaliador', 'senha', 'Avaliador', current_date() 
 );
 
 create table tbadmin(
@@ -59,9 +58,6 @@ nomeEmpresa varchar(40) not null,
  nmFantasia varchar(40) not null,
  constraint pegUsuario foreign key (idUsuario) references tbusuario(idUsuario) on update cascade on delete cascade
  );
- insert into tbempresa(idUsuario, nomeEmpresa, cnpj, razaoSocial, dsLogradouro, cep, telResp, telFixo, cdAtiv, nomeResp, nmFantasia) values(
- 1, 'House', '000000000', 'House', 'Ipatinga', '35162098', '31971466738','31971466738', 1, 'Bezao', 'House'
- );
 
  create table tbavaliador(
 	idAvaliador int  auto_increment,
@@ -76,7 +72,17 @@ create table tbcandidato(
     nome varchar(50) not null,
     cpf varchar(11) not null,
     dataInclusao DATE not null,
+    notaFinal float null,
     idAvaliador int not null,
+    idEmpresa int not null,
     oficio varchar(50) not null,
-    constraint pegAvaliadorCandidato foreign key (idAvaliador) references tbavaliador(idAvaliador) on update cascade on delete cascade
+    constraint pegAvaliadorCandidato foreign key (idAvaliador) references tbavaliador(idAvaliador) on update cascade on delete cascade,
+    constraint pegEmpresaCandidato foreign key (idEmpresa) references tbempresa(idEmpresa) on update cascade on delete cascade
+);
+
+create table tbitem(
+	idItem int primary key auto_increment,
+    idOficio int not null,
+    descricao varchar(400) not null,
+    constraint fkItemOficio foreign key (idOficio) references tboficio(idOficio) on delete cascade on update cascade
 );
