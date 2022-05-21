@@ -2,16 +2,16 @@ const res = require('express/lib/response');
 const mysqlConnection = require('../connection/connection');
 
 module.exports = class Candidato {
-    constructor(nome, cpf, idAvaliador, idEmpresa, oficio) {
+    constructor(nome, cpf, idAvaliador, idEmpresa, idOficio) {
         this.nome = nome;
         this.cpf = cpf;
         this.idAvaliador = idAvaliador;
         this.idEmpresa = idEmpresa;
-        this.oficio = oficio;
+        this.idOficio = idOficio;
     }
     save(user) {
         return mysqlConnection.execute(
-            'INSERT INTO tbcandidato(nome, cpf, datainclusao, idavaliador,idempresa, oficio) VALUES(?, ?, CURRENT_DATE(),?, ?, ?)', [user.nome, user.cpf, user.idAvaliador, user.idEmpresa, user.oficio],
+            'INSERT INTO tbcandidato(nome, cpf, datainclusao, idavaliador,idempresa, idoficio) VALUES(?, ?, CURRENT_DATE(),?, ?, ?)', [user.nome, user.cpf, user.idAvaliador, user.idEmpresa, user.idOficio],
             (err, rows, fields) => {
                 if (!err) {
                     console.log('Candidato criado com sucesso!');

@@ -32,7 +32,7 @@ router.get('/buscarAvaliadores', (req, res) => {
 });
 
 router.post('/listarPorAvaliador', (req, res) => {
-    mysqlConnection.query('SELECT * FROM tbcandidato where idAvaliador = ?', [req.body.idUsuario], (err, rows) => {
+    mysqlConnection.query('SELECT tbcandidato.idCandidato, tbcandidato.nome, tbcandidato.cpf,tbcandidato.dataInclusao, tbcandidato.notaFinal, tbcandidato.idAvaliador, tbcandidato.idEmpresa, tbcandidato.idOficio, tboficio.oficio FROM tbcandidato inner join tboficio ON tbcandidato.idOficio = tboficio.idOficio inner join tbavaliador ON tbcandidato.idavaliador = tbavaliador.idAvaliador WHERE tbavaliador.idAvaliador = ?', [req.body.idUsuario], (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {

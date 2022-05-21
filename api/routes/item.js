@@ -14,6 +14,17 @@ router.get('/listar', (req, res) => {
     });
 });
 
+router.post('/buscarQuestoesProva', (req, res) => {
+    mysqlConnection.query('SELECT tbitem.idOficio, tbitem.descricao FROM tbitem inner join tboficio ON tbitem.idOficio = tboficio.idOficio WHERE tbitem.idOficio = ?', [req.body.idOficio],
+        (err, rows) => {
+            if (!err) {
+                res.send(rows);
+            } else {
+                console.log('deu erro', err);
+            }
+        })
+});
+
 router.post('/create', (req, res) => {
     console.log(req.body);
     mysqlConnection.query('INSERT INTO tbitem(idoficio, descricao) VALUES(?, ?)', [req.body.idOficio, req.body.descricao],

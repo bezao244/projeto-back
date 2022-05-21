@@ -5,7 +5,7 @@ const Candidato = require('../models/candidatocs');
 const candidato = new Candidato();
 
 router.get('/listarCandidatos', (req, res) => {
-    mysqlConnection.query('SELECT * FROM tbcandidato ', (err, rows) => {
+    mysqlConnection.query('SELECT tbcandidato.idCandidato, tbcandidato.nome, tbcandidato.cpf,tbcandidato. dataInclusao, tbcandidato.notaFinal, tbcandidato.idAvaliador, tbcandidato.idEmpresa, tbcandidato.idOficio, tboficio.oficio FROM tbcandidato inner join tboficio ON tbcandidato.idOficio = tboficio.idOficio', (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
@@ -14,7 +14,7 @@ router.get('/listarCandidatos', (req, res) => {
     });
 });
 router.post('/buscarDadosCandidato', (req, res) => {
-    mysqlConnection.query('SELECT * FROM tbcandidato where idCandidato = ?', [req.body.idCandidato], (err, rows) => {
+    mysqlConnection.query('SELECT tbcandidato.idCandidato, tbcandidato.nome, tbcandidato.cpf,tbcandidato.dataInclusao, tbcandidato.notaFinal, tbcandidato.idAvaliador, tbcandidato.idEmpresa, tbcandidato.idOficio, tboficio.oficio FROM tbcandidato inner join tboficio ON tbcandidato.idOficio = tboficio.idOficio WHERE tbcandidato.idCandidato = ?', [req.body.idCandidato], (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
@@ -78,7 +78,7 @@ router.post('/adicionarNotaCandidato', (req, res) => {
 });
 
 router.post('/createCandidato', (req, res) => {
-    var candidato = new Candidato(req.body.nome, req.body.cpf, req.body.idAvaliador, req.body.idEmpresa, req.body.oficio);
+    var candidato = new Candidato(req.body.nome, req.body.cpf, req.body.idAvaliador, req.body.idEmpresa, req.body.idOficio);
     candidato.save(candidato);
     res.send(true);
 });
