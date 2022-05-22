@@ -72,17 +72,29 @@ create table tbcandidato(
     nome varchar(50) not null,
     cpf varchar(11) not null,
     dataInclusao DATE not null,
-    notaFinal float null,
+    notaTeorica decimal(10, 2) null,
     idAvaliador int not null,
     idEmpresa int not null,
-    oficio varchar(50) not null,
+    idOficio int not null,
+    foiAvaliado bool null,
     constraint pegAvaliadorCandidato foreign key (idAvaliador) references tbavaliador(idAvaliador) on update cascade on delete cascade,
-    constraint pegEmpresaCandidato foreign key (idEmpresa) references tbempresa(idEmpresa) on update cascade on delete cascade
+    constraint pegEmpresaCandidato foreign key (idEmpresa) references tbempresa(idEmpresa) on update cascade on delete cascade,
+    constraint pegOficioCandidato foreign key (idOficio) references tboficio(idOficio) on update cascade on delete cascade
 );
-
 create table tbitem(
 	idItem int primary key auto_increment,
     idOficio int not null,
     descricao varchar(400) not null,
+    competencia varchar(100) not null,
+    peso int not null,
     constraint fkItemOficio foreign key (idOficio) references tboficio(idOficio) on delete cascade on update cascade
+);
+
+create table tbnotaitem(
+	idNota int primary key auto_increment,
+    idItem int not null,
+    idCandidato int not null,
+    notaItem int not null,
+    constraint fkNotaItem foreign key (idItem) references tbitem(idItem) on update cascade on delete cascade,
+    constraint fkCandidatoNota foreign key (idCandidato) references tbcandidato(idCandidato) on update cascade on delete cascade
 );

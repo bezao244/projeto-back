@@ -14,7 +14,7 @@ router.get('/listarEmpresa', (req, res) => {
 })
 router.post('/listarPorEmpresa', (req, res) => {
 
-    mysqlConnection.query('SELECT * FROM tbcandidato where idEmpresa = ?', [req.body.idUsuario], (err, rows) => {
+    mysqlConnection.query('SELECT  tbcandidato.idCandidato, tbcandidato.nome, tbcandidato.cpf,tbcandidato.dataInclusao, tbcandidato.notaTeorica, tbcandidato.idEmpresa, tboficio.oficio FROM tbcandidato inner join tboficio ON tbcandidato.idOficio = tboficio.idOficio inner join tbempresa ON tbcandidato.idEmpresa = tbempresa.idEmpresa WHERE tbcandidato.foiAvaliado AND tbempresa.idEmpresa = ? AND tbcandidato.notaTeorica is not null', [req.body.idUsuario], (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
