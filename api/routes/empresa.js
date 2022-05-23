@@ -12,9 +12,22 @@ router.get('/listarEmpresa', (req, res) => {
         }
     })
 })
+
+router.post('/buscarDadosNotaCandidato', (req, res) => {
+    mysqlConnection.query('select tbcandidato.idCandidato, tbnotaitem.notaItem, tbcandidato.nome, tbitem.descricao, tboficio.oficio, tbcandidato.nome FROM tbnotaitem inner join tbcandidato ON tbnotaitem.idCandidato = tbcandidato.idCandidato inner join tbitem ON tbnotaitem.idItem = tbitem.idItem inner join tboficio ON tbcandidato.idOficio = tboficio.idOficio WHERE tbnotaitem.idCandidato = ?', [req.body.idCandidato],
+        (err, rows) => {
+            if (!err) {
+                res.send(rows);
+            } else {
+                res.send(false);
+                console.log(err);
+            }
+        });
+});
+
 router.post('/listarPorEmpresa', (req, res) => {
 
-    mysqlConnection.query('SELECT  tbcandidato.idCandidato, tbcandidato.nome, tbcandidato.cpf,tbcandidato.dataInclusao, tbcandidato.notaTeorica, tbcandidato.idEmpresa, tboficio.oficio FROM tbcandidato inner join tboficio ON tbcandidato.idOficio = tboficio.idOficio inner join tbempresa ON tbcandidato.idEmpresa = tbempresa.idEmpresa WHERE tbcandidato.foiAvaliado AND tbempresa.idEmpresa = ? AND tbcandidato.notaTeorica is not null', [req.body.idUsuario], (err, rows) => {
+    mysqlConnection.query('SELECT  tbcandidato.idCandidato, tbcandidato.nome, tbcandidato.cpf,tbcandidato.dataInclusao, tbcandidato.notaTeorica, tbcandidato.idEmpresa, tboficio.oficio FROM tbcandidato inner join tboficio ON tbcandidato.idOficio = tboficio.idOficio inner join tbempresa ON tbcandidato.idEmpresa = tbempresa.idEmpresa WHERE tbcandidato.foiAvaliado AND tbempresa.idEmpresa = ? AND tbcandidato.notaTeorica is not null AND tbcandidato.foiAvaliado', [req.body.idUsuario], (err, rows) => {
         if (!err) {
             res.send(rows);
         } else {
