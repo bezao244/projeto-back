@@ -37,16 +37,18 @@ router.post('/listarPorEmpresa', (req, res) => {
 });
 
 router.post('/filtrarEmpresa', (req, res) => {
-    let query = `SELECT * FROM tbcandidato where idEmpresa = ${req.body.idEmpresa}`;
+    let query = `SELECT c.nome, c.cpf, c.idCandidato, tboficio.oficio FROM tbcandidato AS c 
+    inner join tboficio ON c.idOficio = tboficio.idOficio
+    WHERE c.foiAvaliado AND C.notaTeorica is not null AND c.idEmpresa = ${req.body.idEmpresa}`;
     if (req.body.nome != null) {
         let nome = req.body.nome + '%';
-        query += ` AND nome LIKE '${nome}'`;
+        query += ` AND c.nome LIKE '${nome}'`;
     }
     if (req.body.oficio != null) {
-        query += ` AND oficio = '${req.body.oficio}'`;
+        query += ` AND tboficio.oficio =  '${req.body.oficio}'`;
     }
     if (req.body.dataInclusao != null) {
-        query += ` AND dataInclusao = '${req.body.dataInclusao}'`;
+        query += ` AND c.dataInclusao = '${req.body.dataInclusao}'`;
     }
     console.log(query);
     mysqlConnection.query(query, (err, rows) => {

@@ -52,19 +52,22 @@ router.post('/filtrarAvaliador', (req, res) => {
         dataInclusao: req.body.dataInclusao
     }
 
-    let query = `SELECT * FROM tbcandidato where idAvaliador = ${modal.idAvaliador}`;
+    let query = `SELECT c.nome, c.cpf, c.idCandidato, tboficio.oficio FROM tbcandidato AS c 
+    inner join tboficio ON c.idOficio = tboficio.idOficio
+    WHERE c.idAvaliador = ${modal.idAvaliador} AND c.foiAvaliado is null`;
 
     if (modal.oficio != null) {
         console.log(modal.oficio);
-        query += ` AND oficio =  '${modal.oficio}'`;
+        query += ` AND tboficio.oficio =  '${modal.oficio}'`;
     }
-    if (modal.nome != '') {
+    if (modal.nome != null) {
         let nome = modal.nome + '%';
-        query += ` AND nome LIKE '${nome}'`;
+        query += ` AND c.nome LIKE '${nome}'`;
     }
     if (modal.dataInclusao != null) {
-        query += ` AND datainclusao =  ${modal.dataInclusao}`;
+        query += ` AND c.datainclusao =  ${modal.dataInclusao}`;
     }
+    console.log(query);
     mysqlConnection.execute(query, (err, rows) => {
         if (!err) {
             res.send(rows);
