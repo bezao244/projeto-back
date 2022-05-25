@@ -103,7 +103,37 @@ router.post('/createAdmin', (req, res) => {
 });
 
 
-
+router.post('/buscarDadosAvaliador', (req, res) => {
+    console.log(req.body)
+    mysqlConnection.query('SELECT * FROM tbavaliador where idUsuario = ?', [req.body.idUsuario],
+        (err, rows) => {
+            if (!err) {
+                res.send(rows);
+            } else {
+                res.send(false);
+            }
+        });
+});
+router.post('/buscarDadosEmpresa', (req, res) => {
+    mysqlConnection.query('SELECT * FROM tbempresa where idUsuario = ?', [req.body.idUsuario],
+        (err, rows) => {
+            if (!err) {
+                res.send(rows);
+            } else {
+                res.send(false);
+            }
+        });
+});
+router.post('/buscarDadosAdiminstrador', (req, res) => {
+    mysqlConnection.query('SELECT * FROM tbusuario where idUsuario = ?', [req.body.idUsuario],
+        (err, rows) => {
+            if (!err) {
+                res.send(rows);
+            } else {
+                res.send(false);
+            }
+        });
+});
 
 
 router.post('/deletar', (req, res) => {
