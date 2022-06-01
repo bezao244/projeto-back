@@ -40,6 +40,16 @@ router.post('/buscarDadosUsuario', (req, res) => {
         }
     });
 });
+router.post('/editar', (req, res) => {
+    return mysqlConnection.query('update tbusuario set email = ?, senha = ? where idUsuario = ?', [req.body.email, req.body.senha, req.body.idUsuario], (err, rows, fields) => {
+        if (!err) {
+            res.send(true);
+        } else {
+            console.log(err);
+            res.send(false);
+        }
+    });
+});
 
 router.post('/filtrar', (req, res) => {
     let nome = req.body.parametro + '%';
